@@ -1,0 +1,5 @@
+*.dll
+*.jar
+*.class
+libs/
+Dockerfile
