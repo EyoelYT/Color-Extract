@@ -1,5 +1,10 @@
+# Generated libs
 *.dll
+*.so
+
+# Java stuff
 *.jar
 *.class
+
 libs/
 Dockerfile
