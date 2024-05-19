@@ -1,0 +1,11 @@
+#+title: Design
+
+1. Load all Graphics
+   - The Extract Button
+   - The Color Text Shower [#4938FF]
+   - The Color Image Shower [-]
+2. When Extract Button is pressed:
+   - pause the desktop
+   - wait for clicks
+     - When click -> send coordinates and colors to color text shower and color image shower
+   - End paused desktop
