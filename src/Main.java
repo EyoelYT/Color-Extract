@@ -20,15 +20,24 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private static boolean extractColor = false;
+    private static boolean appJustOpened = true;
+
     @Override
     public void start(Stage primaryStage) {
         // Application primary stage here
-        Button extractButton = new Button();
-        extractButton.setText("Extract");
+        Button extractButton = new Button("Start Color Extract");
 
         // Event handlers
         extractButton.setOnAction(event -> {
-            startGetColorAtMouseLocation();
+            extractColor = !extractColor;
+            extractButton.setText(extractColor ? "Extracting Color" : "Start Color Extract");
+            if (extractColor) {
+                startGetColorAtMouseLocation();
+            } else {
+                System.out.println("Color Extraction has been paused");
+            }
+
         });
 
         // Layout
@@ -46,12 +55,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    // Start procedure where mouse clicks generate color reports
-    public static void startGetColorAtMouseLocation() {
-        // Print OS information
-        String osName = System.getProperty("os.name");
-        System.out.println("Operating System: " + osName);
-
+    public static void registerGlobalNativeHook() {
         // Register JnativeHook to the global screen for getting mouse coordinates
         try {
             GlobalScreen.registerNativeHook();
@@ -60,6 +64,17 @@ public class Main extends Application {
             System.err.println(ex.getMessage());
             System.exit(1);
         }
+    }
+
+    // Start procedure where mouse clicks generate color reports
+    public static void startGetColorAtMouseLocation() {
+        // Print OS information
+        String osName = System.getProperty("os.name");
+        System.out.println("Operating System: " + osName);
+        if (appJustOpened){
+            registerGlobalNativeHook();
+            appJustOpened = false;
+        }
 
         // Add mouse click event listener
         GlobalScreen.addNativeMouseListener(new NativeMouseListener() {
@@ -67,8 +82,12 @@ public class Main extends Application {
             // Print color at mouse location when mouse button is pressed
             @Override
             public void nativeMouseClicked(NativeMouseEvent e) {
-                System.out.println("Mouse Clicked: " + e.getClickCount());
-                printColorAtMouseLocation();
+                if (extractColor) {
+                    printColorAtMouseLocation();
+                    System.out.println("Mouse Clicked: " + e.getClickCount());
+                } else {
+                    System.out.println("Color Extraction is Paused");
+                }
             }
         });
     }
