@@ -6,5 +6,8 @@
 *.jar
 *.class
 
+# VSCode stuff
+.vscode/
+
 libs/
 Dockerfile
