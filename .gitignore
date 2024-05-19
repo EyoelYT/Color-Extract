@@ -9,5 +9,8 @@
 # VSCode stuff
 .vscode/
 
+# Design
+src/Design.org
+
 libs/
 Dockerfile
