@@ -42,13 +42,24 @@ public class Main {
         Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
         int x = mouseLocation.x;
         int y = mouseLocation.y;
-
         try {
             Robot robot = new Robot();
             Color color = robot.getPixelColor(x, y);
             System.out.println("Color at [" + x + "," + y + "]: " + color);
+            System.out.println("HexColor = #" + getHexString(color.getRed())
+                                              + getHexString(color.getGreen())
+                                              + getHexString(color.getBlue())
+                                              );
         } catch (AWTException e) {
             e.printStackTrace();
         }
+    }
+
+    // Taken from https://www.tabnine.com/code/java/methods/java.awt.Robot/getPixelColor
+    // Turns 
+    public static String getHexString(int rgb) {
+        String hexString = Integer.toHexString(rgb);
+        hexString = hexString.length() > 1 ? hexString : "0" + hexString;
+        return hexString;
     }
 }
