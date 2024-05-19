@@ -11,33 +11,36 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 
 public class Main {
+
+
     public static void main(String args[]) {
-       String osName = System.getProperty("os.name");
-       System.out.println("Operating System: " + osName);
 
-       try {
-           GlobalScreen.registerNativeHook();
-       } catch (NativeHookException ex) {
-           System.err.println("There was a problem registering the native hook.");
-           System.err.println(ex.getMessage());
-           System.exit(1);
-       }
+        // Print OS information
+        String osName = System.getProperty("os.name");
+        System.out.println("Operating System: " + osName);
 
+        // Register JnativeHook to the global screen for getting mouse coordinates
+        try {
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException ex) {
+            System.err.println("There was a problem registering the native hook.");
+            System.err.println(ex.getMessage());
+            System.exit(1);
+        }
 
-       GlobalScreen.addNativeMouseListener(new NativeMouseListener() {
-           @Override
-           public void nativeMouseClicked(NativeMouseEvent e) {
-               System.out.println("Mouse Clicked: " + e.getClickCount());
-               printColorAtMouseLocation();
-           }
-       });
+        // Add mouse click event listener
+        GlobalScreen.addNativeMouseListener(new NativeMouseListener() {
+
+            // Print color at mouse location when mouse button is pressed
+            @Override
+            public void nativeMouseClicked(NativeMouseEvent e) {
+                System.out.println("Mouse Clicked: " + e.getClickCount());
+                printColorAtMouseLocation();
+            }
+        });
     }
 
-    // TODO Specify the x and y coordinates of the pixel from mouse input
-    // Pause mouse click (next mouse click doesn't do anything to the system @
-    // system level) and wait for mouse click
-    // When mouse clicked: get coordinates at mouse click => then resume normal
-    // mouse clicks
+    // Print the color at current mouse coordinates
     private static void printColorAtMouseLocation() {
         Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
         int x = mouseLocation.x;
@@ -55,8 +58,8 @@ public class Main {
         }
     }
 
-    // Taken from https://www.tabnine.com/code/java/methods/java.awt.Robot/getPixelColor
-    // Turns 
+    // https://www.tabnine.com/code/java/methods/java.awt.Robot/getPixelColor
+    // Turns 255,255,255 color value into #RRGGBB hex format
     public static String getHexString(int rgb) {
         String hexString = Integer.toHexString(rgb);
         hexString = hexString.length() > 1 ? hexString : "0" + hexString;
