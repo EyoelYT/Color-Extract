@@ -1,16 +1,25 @@
+// Mouse Pointer and Color Extraction
 import java.awt.Color;
 import java.awt.Robot;
-import java.awt.TextField;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 
+// Clipboard
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+
+// Mouse Controls
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 
+// JavaFX stuff
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,7 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
-
+import javafx.scene.control.TextField;
 
 public class Main extends Application {
 
@@ -27,14 +36,17 @@ public class Main extends Application {
     private static boolean appJustOpened = true;
 
     // public text field
-    private static javafx.scene.control.TextField colorCodeText;
+    private static TextField colorCodeText;
 
     // Application primary stage here
     @Override
     public void start(Stage primaryStage) {
         // Scene components
         Button extractButton = new Button("Start Color Extract");
-        colorCodeText = new javafx.scene.control.TextField("#000000");
+        colorCodeText = new TextField("#000000");
+        Button copyColorCodeTextButton = new Button("Copy");
+
+        // Initial configuration of components
         colorCodeText.setEditable(false);
 
         // Event handlers
@@ -46,14 +58,23 @@ public class Main extends Application {
             } else {
                 System.out.println("Color Extraction has been paused");
             }
-
         });
+
+        // copy Color Text Shower text into system clipboard
+        copyColorCodeTextButton.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(colorCodeText.getText());
+            clipboard.setContent(content);
+        });
+
 
         // Layout
         // StackPane root = new StackPane();
         VBox root = new VBox(10);
         root.getChildren().add(extractButton);
         root.getChildren().add(colorCodeText);
+        root.getChildren().add(copyColorCodeTextButton);
 
         Scene scene = new Scene(root, 800, 600);
 
