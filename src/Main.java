@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Robot;
+import java.awt.TextField;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -17,16 +18,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.scene.layout.VBox;
+
 
 public class Main extends Application {
 
     private static boolean extractColor = false;
     private static boolean appJustOpened = true;
 
+    // public text field
+    private static javafx.scene.control.TextField colorCodeText;
+
+    // Application primary stage here
     @Override
     public void start(Stage primaryStage) {
-        // Application primary stage here
+        // Scene components
         Button extractButton = new Button("Start Color Extract");
+        colorCodeText = new javafx.scene.control.TextField("#000000");
+        colorCodeText.setEditable(false);
 
         // Event handlers
         extractButton.setOnAction(event -> {
@@ -41,8 +50,10 @@ public class Main extends Application {
         });
 
         // Layout
-        StackPane root = new StackPane();
+        // StackPane root = new StackPane();
+        VBox root = new VBox(10);
         root.getChildren().add(extractButton);
+        root.getChildren().add(colorCodeText);
 
         Scene scene = new Scene(root, 800, 600);
 
@@ -105,6 +116,9 @@ public class Main extends Application {
                                               + getHexString(color.getGreen())
                                               + getHexString(color.getBlue())
                                               );
+            colorCodeText.setText("#" + getHexString(color.getRed())
+                                      + getHexString(color.getGreen())
+                                      + getHexString(color.getBlue()));
         } catch (AWTException e) {
             e.printStackTrace();
         }
