@@ -117,4 +117,11 @@ public class Main extends Application {
         hexString = hexString.length() > 1 ? hexString : "0" + hexString;
         return hexString;
     }
+
+    // Function that ends the terminal application when the javafx is closed
+    @Override
+    public void stop() {
+        System.exit(0);
+    }
+
 }
