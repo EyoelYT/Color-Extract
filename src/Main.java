@@ -1,5 +1,5 @@
 // Mouse Pointer and Color Extraction
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
@@ -29,6 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
+import javafx.scene.shape.Rectangle;
 
 public class Main extends Application {
 
@@ -37,6 +38,7 @@ public class Main extends Application {
 
     // public text field
     private static TextField colorCodeText;
+    private static Rectangle colorDisplay;
 
     // Application primary stage here
     @Override
@@ -45,6 +47,7 @@ public class Main extends Application {
         Button extractButton = new Button("Start Color Extract");
         colorCodeText = new TextField("#000000");
         Button copyColorCodeTextButton = new Button("Copy");
+        colorDisplay = new Rectangle(100, 100);
 
         // Initial configuration of components
         colorCodeText.setEditable(false);
@@ -60,7 +63,7 @@ public class Main extends Application {
             }
         });
 
-        // copy Color Text Shower text into system clipboard
+        // Button press to copy Color Text Shower text into system clipboard
         copyColorCodeTextButton.setOnAction(event -> {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
@@ -75,6 +78,7 @@ public class Main extends Application {
         root.getChildren().add(extractButton);
         root.getChildren().add(colorCodeText);
         root.getChildren().add(copyColorCodeTextButton);
+        root.getChildren().add(colorDisplay);
 
         Scene scene = new Scene(root, 800, 600);
 
@@ -131,7 +135,7 @@ public class Main extends Application {
         int y = mouseLocation.y;
         try {
             Robot robot = new Robot();
-            Color color = robot.getPixelColor(x, y);
+            java.awt.Color color = robot.getPixelColor(x, y);
             System.out.println("Color at [" + x + "," + y + "]: " + color);
             System.out.println("HexColor = #" + getHexString(color.getRed())
                                               + getHexString(color.getGreen())
@@ -140,6 +144,7 @@ public class Main extends Application {
             colorCodeText.setText("#" + getHexString(color.getRed())
                                       + getHexString(color.getGreen())
                                       + getHexString(color.getBlue()));
+            colorDisplay.setFill(convertAwtColorToJfx(color));
         } catch (AWTException e) {
             e.printStackTrace();
         }
@@ -157,6 +162,15 @@ public class Main extends Application {
     @Override
     public void stop() {
         System.exit(0);
+    }
+
+    private static javafx.scene.paint.Color convertAwtColorToJfx(java.awt.Color awtColor) {
+        int r = awtColor.getRed();
+        int g = awtColor.getGreen();
+        int b = awtColor.getBlue();
+        int a = awtColor.getAlpha();
+
+        return javafx.scene.paint.Color.rgb(r, g, b, a / 255.0);
     }
 
 }
