@@ -35,6 +35,7 @@ public class Main extends Application {
 
     private static boolean extractColor = false;
     private static boolean appJustOpened = true;
+    private static boolean isHoveringOverButton = false;
 
     // public text field
     private static TextField colorCodeText;
@@ -52,15 +53,24 @@ public class Main extends Application {
         // Initial configuration of components
         colorCodeText.setEditable(false);
 
-        // Event handlers
+        // EVENT HANDLERS
+        // Button to initiate extraction procedure
         extractButton.setOnAction(event -> {
             extractColor = !extractColor;
-            extractButton.setText(extractColor ? "Extracting Color" : "Start Color Extract");
+            extractButton.setText(extractColor ? "Press to Cancel" : "Start Color Extract");
             if (extractColor) {
                 startGetColorAtMouseLocation();
             } else {
                 System.out.println("Color Extraction has been paused");
             }
+        });
+
+        extractButton.setOnMouseEntered(event -> {
+            isHoveringOverButton = true;
+        });
+
+        extractButton.setOnMouseExited(event -> {
+            isHoveringOverButton = false;
         });
 
         // Button press to copy Color Text Shower text into system clipboard
@@ -71,8 +81,16 @@ public class Main extends Application {
             clipboard.setContent(content);
         });
 
+        copyColorCodeTextButton.setOnMouseEntered(event -> {
+            isHoveringOverButton = true;
+        });
 
-        // Layout
+        copyColorCodeTextButton.setOnMouseExited(event -> {
+            isHoveringOverButton = false;
+        });
+
+
+        // LAYOUT
         // StackPane root = new StackPane();
         VBox root = new VBox(10);
         root.getChildren().add(extractButton);
@@ -119,8 +137,13 @@ public class Main extends Application {
             @Override
             public void nativeMouseClicked(NativeMouseEvent e) {
                 if (extractColor) {
-                    printColorAtMouseLocation();
-                    System.out.println("Mouse Clicked: " + e.getClickCount());
+                    // If extractColor button is true (pressed) and cursor is not over any button
+                    if (!isHoveringOverButton) {
+                        printColorAtMouseLocation();
+                        System.out.println("Mouse Clicked: " + e.getClickCount());
+                    } else {
+                        System.out.println("Hovering over button. Skipped getting mouse position desktop color.");
+                    }
                 } else {
                     System.out.println("Color Extraction is Paused");
                 }
