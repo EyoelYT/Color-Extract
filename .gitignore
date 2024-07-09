@@ -12,5 +12,54 @@
 # Design
 src/Design.org
 
+# Huh
 libs/
 Dockerfile
+
+# Some Package files
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Logs and databases to not peer through
+*.log
+*.sql
+*.sqlite
+
+# OS generated thumbs and thrashes
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE/Editor stuff
+/.idea/
+*.swp
+*~
+*.sublime*
+.project
+.settings/
+.classpath
+
+# Build dirs
+/build/
+/out/
+/target/
+
+# Gradles
+.gradle/
+gradlew
+gradlew.bat
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# Node?
+/node_modules/
+
+# Envy
+.env
