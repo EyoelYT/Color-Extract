@@ -1,3 +1,4 @@
+
 // Mouse Pointer and Color Extraction
 import javafx.scene.paint.Color;
 import java.awt.Robot;
@@ -37,7 +38,7 @@ public class Main extends Application {
     private static boolean appJustOpened = true;
     private static boolean isHoveringOverButton = false;
 
-    // public text field
+    // Public UI
     private static TextField colorCodeText;
     private static Rectangle colorDisplay;
 
@@ -57,7 +58,7 @@ public class Main extends Application {
         // Button to initiate extraction procedure
         extractButton.setOnAction(event -> {
             extractColor = !extractColor;
-            extractButton.setText(extractColor ? "Press to Cancel" : "Start Color Extract");
+            extractButton.setText(extractColor ? "Stop Extracting" : "Start Color Extract");
             if (extractColor) {
                 startGetColorAtMouseLocation();
             } else {
@@ -65,13 +66,8 @@ public class Main extends Application {
             }
         });
 
-        extractButton.setOnMouseEntered(event -> {
-            isHoveringOverButton = true;
-        });
-
-        extractButton.setOnMouseExited(event -> {
-            isHoveringOverButton = false;
-        });
+        extractButton.setOnMouseEntered(event -> isHoveringOverButton = true);
+        extractButton.setOnMouseExited(event -> isHoveringOverButton = false);
 
         // Button press to copy Color Text Shower text into system clipboard
         copyColorCodeTextButton.setOnAction(event -> {
@@ -81,22 +77,17 @@ public class Main extends Application {
             clipboard.setContent(content);
         });
 
-        copyColorCodeTextButton.setOnMouseEntered(event -> {
-            isHoveringOverButton = true;
-        });
-
-        copyColorCodeTextButton.setOnMouseExited(event -> {
-            isHoveringOverButton = false;
-        });
-
+        copyColorCodeTextButton.setOnMouseEntered(event -> isHoveringOverButton = true);
+        copyColorCodeTextButton.setOnMouseExited(event -> isHoveringOverButton = false);
 
         // LAYOUT
         // StackPane root = new StackPane();
         VBox root = new VBox(10);
-        root.getChildren().add(extractButton);
-        root.getChildren().add(colorCodeText);
-        root.getChildren().add(copyColorCodeTextButton);
-        root.getChildren().add(colorDisplay);
+        root.getChildren().addAll(
+                extractButton,
+                colorCodeText,
+                copyColorCodeTextButton,
+                colorDisplay);
 
         Scene scene = new Scene(root, 800, 600);
 
@@ -125,7 +116,7 @@ public class Main extends Application {
         // Print OS information
         String osName = System.getProperty("os.name");
         System.out.println("Operating System: " + osName);
-        if (appJustOpened){
+        if (appJustOpened) {
             registerGlobalNativeHook();
             appJustOpened = false;
         }
@@ -133,7 +124,7 @@ public class Main extends Application {
         // Add mouse click event listener
         GlobalScreen.addNativeMouseListener(new NativeMouseListener() {
 
-            // Print color at mouse location when mouse button is pressed
+            // Print color at mouse location when mouse button is pressed (unless over buttons on the desktop)
             @Override
             public void nativeMouseClicked(NativeMouseEvent e) {
                 if (extractColor) {
@@ -161,12 +152,11 @@ public class Main extends Application {
             java.awt.Color color = robot.getPixelColor(x, y);
             System.out.println("Color at [" + x + "," + y + "]: " + color);
             System.out.println("HexColor = #" + getHexString(color.getRed())
-                                              + getHexString(color.getGreen())
-                                              + getHexString(color.getBlue())
-                                              );
+                    + getHexString(color.getGreen())
+                    + getHexString(color.getBlue()));
             colorCodeText.setText("#" + getHexString(color.getRed())
-                                      + getHexString(color.getGreen())
-                                      + getHexString(color.getBlue()));
+                    + getHexString(color.getGreen())
+                    + getHexString(color.getBlue()));
             colorDisplay.setFill(convertAwtColorToJfx(color));
         } catch (AWTException e) {
             e.printStackTrace();
