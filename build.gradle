@@ -1,0 +1,37 @@
+// help, I'm not sure if this is right
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation files('libs/jnativehook-2.2.2.jar')
+}
+
+javafx {
+    version = "21.0.2" // my sdk
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ]
+}
+
+application {
+    mainClassName = 'Main'  // my main class
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs = [
+        "--module-path", "libs/javafx-sdk-21.0.2/lib",
+        "--add-modules", "javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web"
+    ]
+}
