@@ -2,10 +2,10 @@
 setlocal
 
 :: Define path to the JavaFX SDK
-set JAVAFX_SDK_PATH=.\javafx-sdk-21.0.2\lib
+set JAVAFX_SDK_PATH=..\libs\javafx-sdk-21.0.2\lib
 
 :: Set the classpath
-set CLASSPATH=.;.\jnativehook-2.2.2.jar;
+set CLASSPATH=.;..\libs\jnativehook-2.2.2.jar;
 
 :: Compile the Java files
 echo Compiling Java files...
