@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation files('libs/jnativehook-2.2.2.jar')
+    implementation files('lib/jnativehook-2.2.2.jar')
 }
 
 javafx {
@@ -18,7 +18,7 @@ javafx {
 }
 
 application {
-    mainClassName = 'Main'  // my main class
+    mainClass = 'Main'  // my main class
 }
 
 sourceSets {
@@ -31,7 +31,7 @@ sourceSets {
 
 tasks.withType(JavaExec) {
     jvmArgs = [
-        "--module-path", "libs/javafx-sdk-21.0.2/lib",
+        "--module-path", "lib/javafx-sdk-21.0.2/lib",
         "--add-modules", "javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web"
     ]
 }

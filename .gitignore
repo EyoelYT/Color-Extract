@@ -15,6 +15,7 @@ src/Design.org
 # Huh
 libs/
 Dockerfile
+bin/
 
 # Some Package files
 *.war
