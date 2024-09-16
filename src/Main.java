@@ -1,16 +1,11 @@
 
 // Mouse Pointer and Color Extraction
-import javafx.scene.paint.Color;
 import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 
 // Clipboard
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
-
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 
@@ -22,11 +17,8 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 
 // JavaFX stuff
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
@@ -54,6 +46,17 @@ public class Main extends Application {
         // Initial configuration of components
         colorCodeText.setEditable(false);
 
+        // LAYOUT
+        // StackPane root = new StackPane();
+        VBox root = new VBox(10);
+        root.getChildren().addAll(
+                extractButton,
+                colorCodeText,
+                copyColorCodeTextButton,
+                colorDisplay);
+
+        Scene scene = new Scene(root, 800, 600);
+
         // EVENT HANDLERS
         // Button to initiate extraction procedure
         extractButton.setOnAction(event -> {
@@ -80,20 +83,22 @@ public class Main extends Application {
         copyColorCodeTextButton.setOnMouseEntered(event -> isHoveringOverButton = true);
         copyColorCodeTextButton.setOnMouseExited(event -> isHoveringOverButton = false);
 
-        // LAYOUT
-        // StackPane root = new StackPane();
-        VBox root = new VBox(10);
-        root.getChildren().addAll(
-                extractButton,
-                colorCodeText,
-                copyColorCodeTextButton,
-                colorDisplay);
-
-        Scene scene = new Scene(root, 800, 600);
-
         primaryStage.setTitle("Color Extract");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        printOSInfo();
+
+        if (appJustOpened) {
+            registerGlobalNativeHook();
+            appJustOpened = false;
+        }
+    }
+
+    private static void printOSInfo() {
+        // Print OS information
+        String osName = System.getProperty("os.name");
+        System.out.println("Operating System: " + osName);
     }
 
     public static void main(String args[]) {
@@ -113,13 +118,6 @@ public class Main extends Application {
 
     // Start procedure where mouse clicks generate color reports
     public static void startGetColorAtMouseLocation() {
-        // Print OS information
-        String osName = System.getProperty("os.name");
-        System.out.println("Operating System: " + osName);
-        if (appJustOpened) {
-            registerGlobalNativeHook();
-            appJustOpened = false;
-        }
 
         // Add mouse click event listener
         GlobalScreen.addNativeMouseListener(new NativeMouseListener() {
@@ -150,13 +148,14 @@ public class Main extends Application {
         try {
             Robot robot = new Robot();
             java.awt.Color color = robot.getPixelColor(x, y);
+
             System.out.println("Color at [" + x + "," + y + "]: " + color);
             System.out.println("HexColor = #" + getHexString(color.getRed())
-                    + getHexString(color.getGreen())
-                    + getHexString(color.getBlue()));
+                                              + getHexString(color.getGreen())
+                                              + getHexString(color.getBlue()));
             colorCodeText.setText("#" + getHexString(color.getRed())
-                    + getHexString(color.getGreen())
-                    + getHexString(color.getBlue()));
+                                      + getHexString(color.getGreen())
+                                      + getHexString(color.getBlue()));
             colorDisplay.setFill(convertAwtColorToJfx(color));
         } catch (AWTException e) {
             e.printStackTrace();
