@@ -21,6 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Rectangle;
 
@@ -31,29 +33,47 @@ public class Main extends Application {
     private static boolean isHoveringOverButton = false;
 
     // Public UI
-    private static TextField colorCodeText;
+    private static TextField hexColorCodeText;
+    private static TextField smolHexColorCodeText;
     private static Rectangle colorDisplay;
 
     // Application primary stage here
     @Override
     public void start(Stage primaryStage) {
         // Scene components
+        final int HORIZONTAL_SIZE = 112;
+        final int VH_BOX_PADDINGS = 10;
+
         Button extractButton = new Button("Start Color Extract");
-        colorCodeText = new TextField("#000000");
-        Button copyColorCodeTextButton = new Button("Copy");
-        colorDisplay = new Rectangle(100, 100);
+
+        hexColorCodeText = new TextField("#000000");
+        hexColorCodeText.setPrefWidth(HORIZONTAL_SIZE);
+        hexColorCodeText.setMaxWidth(HORIZONTAL_SIZE);
+        Button copyHexColorCodeTextButton = new Button("Copy");
+
+        smolHexColorCodeText = new TextField("#000");
+        smolHexColorCodeText.setPrefWidth(HORIZONTAL_SIZE);
+        smolHexColorCodeText.setMaxWidth(HORIZONTAL_SIZE);
+        Button copySmolHexColorCodeTextButton = new Button("Copy");
+
+        colorDisplay = new Rectangle(HORIZONTAL_SIZE, HORIZONTAL_SIZE);
+
+        HBox hexColorDisplay = new HBox(VH_BOX_PADDINGS, hexColorCodeText, copyHexColorCodeTextButton);
+        HBox smolHexColorDisplay = new HBox(VH_BOX_PADDINGS, smolHexColorCodeText, copySmolHexColorCodeTextButton);
 
         // Initial configuration of components
-        colorCodeText.setEditable(false);
+        hexColorCodeText.setEditable(false);
+        smolHexColorCodeText.setEditable(false);
 
         // LAYOUT
-        // StackPane root = new StackPane();
-        VBox root = new VBox(10);
-        root.getChildren().addAll(
-                extractButton,
-                colorCodeText,
-                copyColorCodeTextButton,
-                colorDisplay);
+        VBox root = new VBox(VH_BOX_PADDINGS,
+                             extractButton,
+                             smolHexColorDisplay,
+                             hexColorDisplay,
+                             colorDisplay);
+
+        Insets rootPadding = new Insets(20);
+        root.setPadding(rootPadding);
 
         Scene scene = new Scene(root, 800, 600);
 
@@ -73,15 +93,22 @@ public class Main extends Application {
         extractButton.setOnMouseExited(event -> isHoveringOverButton = false);
 
         // Button press to copy Color Text Shower text into system clipboard
-        copyColorCodeTextButton.setOnAction(event -> {
+        copyHexColorCodeTextButton.setOnAction(event -> {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
-            content.putString(colorCodeText.getText());
+            content.putString(hexColorCodeText.getText());
             clipboard.setContent(content);
         });
 
-        copyColorCodeTextButton.setOnMouseEntered(event -> isHoveringOverButton = true);
-        copyColorCodeTextButton.setOnMouseExited(event -> isHoveringOverButton = false);
+        copySmolHexColorCodeTextButton.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(smolHexColorCodeText.getText());
+            clipboard.setContent(content);
+        });
+
+        copyHexColorCodeTextButton.setOnMouseEntered(event -> isHoveringOverButton = true);
+        copyHexColorCodeTextButton.setOnMouseExited(event -> isHoveringOverButton = false);
 
         primaryStage.setTitle("Color Extract");
         primaryStage.setScene(scene);
@@ -150,24 +177,31 @@ public class Main extends Application {
             java.awt.Color color = robot.getPixelColor(x, y);
 
             System.out.println("Color at [" + x + "," + y + "]: " + color);
-            System.out.println("HexColor = #" + getHexString(color.getRed())
-                                              + getHexString(color.getGreen())
-                                              + getHexString(color.getBlue()));
-            colorCodeText.setText("#" + getHexString(color.getRed())
-                                      + getHexString(color.getGreen())
-                                      + getHexString(color.getBlue()));
+            System.out.println("HexColor = " + getHexString(color.getRed(), color.getGreen(), color.getBlue()));
+            hexColorCodeText.setText(getHexString(color.getRed(), color.getGreen(), color.getBlue()));
+            smolHexColorCodeText.setText(getRGBShortString(color.getRed(), color.getGreen(), color.getBlue()));
             colorDisplay.setFill(convertAwtColorToJfx(color));
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
+    public static String getRGBShortString(int r, int g, int b) {
+        String rHex = Integer.toHexString(r / 16);
+        String gHex = Integer.toHexString(g / 16);
+        String bHex = Integer.toHexString(b / 16);
+
+        return "#" + rHex + gHex + bHex;
+    }
+
     // https://www.tabnine.com/code/java/methods/java.awt.Robot/getPixelColor
     // Turns 255,255,255 color value into #RRGGBB hex format
-    public static String getHexString(int rgb) {
-        String hexString = Integer.toHexString(rgb);
-        hexString = hexString.length() > 1 ? hexString : "0" + hexString;
-        return hexString;
+    public static String getHexString(int r, int g, int b) {
+        String rHex = String.format("%02x", r);
+        String gHex = String.format("%02x", g);
+        String bHex = String.format("%02x", b);
+
+        return "#" + rHex + gHex + bHex;
     }
 
     // Function that ends the terminal application when the javafx is closed
